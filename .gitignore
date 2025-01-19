@@ -1,0 +1,50 @@
+# Node modules (if your plugin uses Node.js)
+node_modules/
+
+# Build directories
+dist/
+build/
+
+# Temporary files and logs
+*.log
+*.tmp
+*.swp
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+*.icloud
+
+# macOS trash files
+._*
+
+# Windows specific files
+Thumbs.db
+desktop.ini
+
+# VSCode specific settings
+.vscode/
+
+# IDE/Editor specific files
+.idea/
+*.iml
+
+# Git-specific ignore
+.git/
+
+# Package lock files
+package-lock.json
+yarn.lock
+
+# Browser plugin specific
+# Chrome extension key file
+*.pem
+
+# Local environment settings
+.env
+.env.local
+
+# Zip files for plugin deployment
+*.zip
+
