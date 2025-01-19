@@ -12,19 +12,19 @@
   "content_scripts": [
     {
       "matches": ["https://yum.service-now.com/incident.do*"],
-      "js": ["incident.js"],
+      "js": ["incident.js", "buttons.js"],
       "css": ["styles.css"],
       "all_frames": true
     },
     {
       "matches": ["https://yum.service-now.com/kb_view.do*"],
-      "js": ["kb.js"],
+      "js": ["kb.js", "buttons.js"],
       "css": ["styles.css"],
       "all_frames": true
     },
     {
       "matches": ["https://yum.service-now.com/ui_page.do*"],
-      "js": ["uipage.js"],
+      "js": ["landing.js", "buttons.js"],
       "css": ["styles.css"],
       "all_frames": true
     }
