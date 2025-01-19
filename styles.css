@@ -1,0 +1,77 @@
+/* General Button Styles */
+.btn {
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+/* Primary Button Modifier */
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Secondary Button Modifier */
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: #565e64;
+}
+
+/* Container for the buttons */
+.button-container {
+  position: fixed;
+  top: 50px; /* Move the container down a bit */
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Container for action buttons */
+.action-buttons-container {
+  display: flex;
+  flex-direction: column; /* Vertically stack the buttons */
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Styling for action buttons */
+.action-buttons-container .btn {
+  width: 200px; /* Same size for each button */
+}
+
+/* Expand/Collapse Button Styling */
+.expand-btn {
+  width: 200px; /* Same width as action buttons */
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #6c757d;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+/* Default state for action buttons (visible) */
+#actionButtonsContainer {
+  display: flex;
+}
+
+/* Collapsed state for action buttons (hidden) */
+#actionButtonsContainer.hidden {
+  display: none;
+}
