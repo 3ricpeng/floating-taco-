@@ -19,13 +19,14 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["https://yum.service-now.com/*kb_view.do*","https://yum.service-now.com/*nav_to.do*" ],
+      "matches": ["https://yum.service-now.com/kb_view.do*","https://yum.service-now.com/nav_to.do*kb_view.do*", "https://yum.service-now.com/*?uri=*kb_view.do*", "https://yum.service-now.com/nav_to.do?uri=*/kb_view.do*"],
       "js": ["scripts/kb.js", "scripts/buttons.js"],
       "css": ["styles/styles.css"],
-      "run_at": "document_start"
+      "run_at": "document_start", 
+      "all_frames": true
     },
     {
-      "matches": ["https://yum.service-now.com/ui_page.do*", "https://yum.service-now.com/nav_to.do*"],
+      "matches": ["https://yum.service-now.com/ui_page.do*", "https://yum.service-now.com/*nav_to.do*"],
       "js": ["scripts/landing.js", "scripts/buttons.js"],
       "css": ["styles/styles.css"],
       "run_at": "document_start"

@@ -29,19 +29,56 @@
     { text: "Copy Store#", action: copyStore, id: "copyStore" },
     { text: "Copy Incident#", action: copyIncident, id: "copyIncident" },
     { text: "Copy Contact", action: copyContact, id: "copyContact" },
-    {
-      text: "Create Teams Template",
-      action: copyTeamsTemplate,
-      id: "createTemplateTeams",
-    },
-    {
-      text: "Create CR Template",
-      action: copyCRTemplate,
-      id: "createTemplateCR",
-    },
+    { text: "Teams Post", action: copyTeamsTemplate, id: "createTemplateTeams" },
+    { text: "Teams Post (Rich)", action: copyTeamsTemplateRich, id: "createTemplateTeams" },
+    { text: "CR Post", action: copyCRTemplate, id: "createTemplateCR" },
+    { text: "open", action: Testing, id:"Testing"}
   ];
 
   let alertsEnabled = false;
+
+
+  function Testing() {
+    // Step 1: Click the button to open the popup
+    const organizationButton = document.getElementById("viewr.incident.u_store");
+    
+    if (organizationButton) {
+        // Simulate a click on the button to open the popup
+        organizationButton.click();
+
+        // Poll for the presence of the "Open Record" link
+        const maxAttempts = 20; // Try for up to 2 seconds (20 * 100ms)
+        let attempts = 0;
+
+        const pollForLink = setInterval(() => {
+            // Step 2: Find the link with the specific class
+            const openRecordLink = document.querySelector('a[data-type="reference_clickthrough"]');
+            
+            if (openRecordLink) {
+                // Stop polling once the link is found
+                clearInterval(pollForLink);
+
+                // Step 3: Open the link in a new page
+                const newWindow = window.open(openRecordLink.href, '_blank');
+
+                // Check if the window was opened successfully
+                if (!newWindow) {
+                    // If pop-ups are blocked, notify the user
+                    alert("Pop-up was blocked. Please allow pop-ups for this page.");
+                }
+            }
+
+            // Stop polling after the maximum attempts
+            if (++attempts >= maxAttempts) {
+                clearInterval(pollForLink);
+                alert("Could not find the 'Open Record' link.");
+            }
+        }, 100); // Poll every 100ms to check for the link
+    } else {
+        alert("Organization button not found!");
+    }
+}
+
 
   function copyStore() {
     const storeField = document.getElementById("incident.u_store_label");
@@ -90,7 +127,67 @@
     }
   }
 
+  
+  // Version 2: Working w/ basic Rich Text 
+  /*
   function copyTeamsTemplate() {
+    const incidentField = document.getElementById(
+      "sys_readonly.incident.number"
+    );
+    const callerField = document.getElementById(
+      "sys_display.incident.caller_id"
+    );
+    const shortDescriptionField = document.getElementById(
+      "incident.short_description"
+    );
+    const notesField = document.getElementById(
+      "activity-stream-work_notes-textarea"
+    );
+  
+    // Format the text for Teams post
+    const plainText = `@US-TB-IT Restaurant Care
+  Store Number: ${callerField ? callerField.value : ""}
+  Incident Number: ${incidentField ? incidentField.value : ""}
+  Issue: ${shortDescriptionField ? shortDescriptionField.value : ""}
+  KB Used:
+  
+  ${notesField ? notesField.value : ""}`;
+  
+    // Format the HTML for Teams post
+    const htmlText = `
+      <p><strong>@US-TB-IT Restaurant Care</strong></p>
+      <p><strong>Store Number:</strong> ${callerField ? callerField.value : ""}</p>
+      <p><strong>Incident Number:</strong> ${incidentField ? incidentField.value : ""}</p>
+      <p><strong>Issue:</strong> ${shortDescriptionField ? shortDescriptionField.value : ""}</p>
+      <p><strong>KB Used:</strong></p>
+      <p>${notesField ? notesField.value : ""}</p>
+    `;
+  
+    // Create a ClipboardItem with both plain text and HTML
+    const clipboardItem = new ClipboardItem({
+      "text/plain": new Blob([plainText], { type: "text/plain" }),
+      "text/html": new Blob([htmlText], { type: "text/html" }),
+    });
+  
+    // Copy the formatted text to the clipboard
+    navigator.clipboard
+      .write([clipboardItem])
+      .then(() => {
+        if (alertsEnabled) {
+          alert("Formatted rich text copied for Teams Post!");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: " + err);
+      });
+  }
+*/
+
+
+/**
+ * Creates TeamsTemplate
+ * */  
+function copyTeamsTemplate() {
     const incidentField = document.getElementById(
       "sys_readonly.incident.number"
     );
@@ -126,6 +223,67 @@ ${notesField ? notesField.value : ""}`;
       });
   }
 
+/**
+ * Creates Teams Tempalte - Rich Text 
+ * */  
+function copyTeamsTemplateRich() {
+  const incidentField = document.getElementById("sys_readonly.incident.number");
+  const callerField = document.getElementById("sys_display.incident.caller_id");
+  const shortDescriptionField = document.getElementById("incident.short_description");
+  const notesField = document.getElementById("activity-stream-work_notes-textarea");
+
+  // Get the incident number and page URL
+  const incidentNumber = incidentField ? incidentField.value : "INCXXXXXXX";
+  const currentUrl = window.location.href; // Get the current URL of the page
+
+  // Get the store number from the caller field
+  const storeNumber = callerField ? callerField.value : "TBC 041114";  // Default to "TBC 041114" if the field is empty
+
+  // Convert notes text to HTML, replacing \n with <br> for line breaks
+  const notesText = notesField ? notesField.value : "";
+  const formattedNotes = notesText.replace(/\n/g, "<br>");
+
+  // Format the rich text (HTML) for Teams
+  const htmlText = `
+    <p><strong>@US-TB-IT Restaurant Care</strong></p>
+    <p><strong>Store Number:</strong> ${storeNumber}</p>
+    <p><strong>Incident Number:</strong> <a href="${currentUrl}">${incidentNumber}</a></p>
+    <p><strong>Issue:</strong> ${shortDescriptionField ? shortDescriptionField.value : ""}</p>
+    <p><strong>KB Used:</strong></p>
+    <p>${formattedNotes}</p> <!-- Notes with preserved line breaks -->
+  `;
+
+  // Format the plain text for fallback
+  const plainText = `@US-TB-IT Restaurant Care
+Store Number: ${storeNumber}
+Incident Number: ${incidentNumber} (${currentUrl})
+Issue: ${shortDescriptionField ? shortDescriptionField.value : ""}
+KB Used:
+
+${notesText}`;
+
+  // Create a ClipboardItem with both plain text and HTML
+  const clipboardItem = new ClipboardItem({
+    "text/plain": new Blob([plainText], { type: "text/plain" }),
+    "text/html": new Blob([htmlText], { type: "text/html" }),
+  });
+
+  // Copy the formatted text to the clipboard
+  navigator.clipboard
+    .write([clipboardItem])
+    .then(() => {
+      if (alertsEnabled){
+        alert("Formatted rich text copied for Teams Post!");
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to copy text: " + err);
+    });
+}
+
+/**
+ * Creates CR Template
+ * */  
   function copyCRTemplate() {
     const contactNameField = document.getElementById("incident.u_contact_to");
     const storeNumberField = document.getElementById("incident.u_store_label");
@@ -241,6 +399,9 @@ Next Steps:
       }
     }
   }
+
+
+
 
   // Load buttons after the page is ready
   window.addEventListener("load", () => {

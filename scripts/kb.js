@@ -1,5 +1,6 @@
 (function () {
-  "use strict";
+  'use strict';
+  alert('run')
 
   /*
   console.log('KB script running at document_start!');
@@ -21,36 +22,38 @@
   });
   */
 
-  /*******EARLY LOAD BEGIN ***************/
+/*******EARLY LOAD BEGIN ***************/
 
-  console.log("Incident script running at document_start!");
+console.log('Incident script running at document_start!');
 
-  // Early loading functionality
-  const earlyLoad = () => {
-    console.log("Early load initializing...");
+// Early loading functionality
+const earlyLoad = () => {
+    console.log('Early load initializing...');
     // Prepare critical logic or data here
-  };
+};
 
-  // Ensure DOM-dependent tasks wait until the DOM is ready
-  const onDomReady = (callback) => {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", callback);
+// Ensure DOM-dependent tasks wait until the DOM is ready
+const onDomReady = (callback) => {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', callback);
     } else {
-      callback();
+        callback();
     }
-  };
+};
 
-  // Call early loading
-  earlyLoad();
-  /*******EARLY LOAD END ***************/
+// Call early loading
+earlyLoad(); 
+/*******EARLY LOAD END ***************/
+
 
   // Define buttons specific to the KB page
   const kbButtons = [
-    { text: "Copy KB#", action: copyArticleId, id: "copyArticleId" },
-    { text: "Scroll to Top", action: scrollToTop, id: "scrollToTop" },
-    { text: "Scroll to Bottom", action: scrollToBottom, id: "scrollToBottom" },
+    { text: 'Copy KB#', action: copyArticleId, id: 'copyArticleId' },
+    { text: 'Scroll to Top', action: scrollToTop, id: 'scrollToTop' },
+    { text: 'Scroll to Bottom', action: scrollToBottom, id: 'scrollToBottom' },
   ];
   let alertsEnabled = false;
+
 
   // Button actions
 
@@ -59,54 +62,52 @@
    * Finds the Article ID from the page and copies it to the clipboard.
    */
   function copyArticleId() {
-    const articleIdElement = document.querySelector("#articleNumber"); // Select the hidden input by its ID
+    const articleIdElement = document.querySelector('#articleNumber'); // Select the hidden input by its ID
     if (articleIdElement) {
-      const articleId = articleIdElement.value.trim(); // Get the value of the input
-      if (articleId) {
-        navigator.clipboard
-          .writeText(articleId)
-          .then(() => {
+        const articleId = articleIdElement.value.trim(); // Get the value of the input
+        if (articleId) {
+            navigator.clipboard.writeText(articleId).then(() => {
+                if (alertsEnabled) {
+                    alert(`Article ID "${articleId}" copied to clipboard!`);
+                }
+            }).catch((err) => {
+                console.error('Failed to copy Article ID:', err);
+                if (alertsEnabled) {
+                    alert('Failed to copy Article ID.');
+                }
+            });
+        } else {
             if (alertsEnabled) {
-              alert(`Article ID "${articleId}" copied to clipboard!`);
+                alert('Article ID is empty.');
             }
-          })
-          .catch((err) => {
-            console.error("Failed to copy Article ID:", err);
-            if (alertsEnabled) {
-              alert("Failed to copy Article ID.");
-            }
-          });
-      } else {
-        if (alertsEnabled) {
-          alert("Article ID is empty.");
         }
-      }
     } else {
-      if (alertsEnabled) {
-        alert("Article ID element not found.");
-      }
+        if (alertsEnabled) {
+            alert('Article ID element not found.');
+        }
     }
-  }
+}
+
 
   /**
    * Scroll to the top of the page.
    */
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    alert("Scrolled to the top!");
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    //alert('Scrolled to the top!');
   }
 
   /**
    * Scroll to the bottom of the page.
    */
   function scrollToBottom() {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    alert("Scrolled to the bottom!");
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    //alert('Scrolled to the bottom!');
   }
 
   // Initialize buttons after the DOM is ready
   onDomReady(() => {
-    console.log("DOM ready. Adding KB buttons...");
-    ButtonUtils.createButtonContainer(kbButtons);
+    console.log('DOM ready. Adding KB buttons...');
+    ButtonUtils.createButtonContainer(kbButtons); 
   });
 })();
