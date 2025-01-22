@@ -1,0 +1,121 @@
+// ==UserScript==
+// @name         KB Helper
+// @namespace    http://tampermonkey.net/
+// @version      2025-01-18
+// @description  Add styled expandable buttons to ServiceNow pages for quick actions
+// @author       ricc
+// @match        https://yum.service-now.com/kb_view.do*
+// @icon         https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/0003/0914/brand.gif?itok=0Ec-nDM1
+// @grant        GM_setClipboard
+// ==/UserScript==
+
+// Helper: Create a button and add it to a container
+function createButton(label, color, clickHandler) {
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.display = 'block';
+    btn.style.margin = '5px 0';
+    btn.style.padding = '10px 20px';
+    btn.style.fontSize = '14px';
+    btn.style.backgroundColor = color;
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '5px';
+    btn.style.cursor = 'pointer';
+    btn.style.width = '100px'; // Set a fixed width for all buttons
+    btn.style.textAlign = 'center'; // Center-align text
+    btn.addEventListener('click', clickHandler);
+    return btn;
+}
+
+// Create a container for the buttons
+const buttonContainer = document.createElement('div');
+buttonContainer.style.position = 'fixed';
+buttonContainer.style.top = '100px';
+buttonContainer.style.right = '10px';
+buttonContainer.style.zIndex = 9999;
+buttonContainer.style.backgroundColor = '#f5f5f5';
+buttonContainer.style.padding = '10px';
+buttonContainer.style.border = '1px solid #ccc';
+buttonContainer.style.borderRadius = '5px';
+buttonContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+buttonContainer.style.display = 'block'; // Initially expanded
+
+// Add buttons to the container
+buttonContainer.appendChild(createButton('Copy KB#', '#0078D4', copyKBNumber));
+// buttonContainer.appendChild(createButton('Copy KB# & Title', '#0078D4', copyKBTitle));
+buttonContainer.appendChild(createButton('Top ↑', '#28a745', jumpToTop));
+buttonContainer.appendChild(createButton('Bottom ↓', '#28a745', jumpToBottom));
+
+document.body.appendChild(buttonContainer);
+
+// Create a toggle button to expand/collapse the buttons
+const toggleButton = document.createElement('button');
+toggleButton.style.position = 'fixed';
+toggleButton.style.top = '70px';
+toggleButton.style.right = '10px';
+toggleButton.style.zIndex = 9999;
+toggleButton.style.width = '50px'; // Set width to fit the logo
+toggleButton.style.height = '50px'; // Set height to fit the logo
+toggleButton.style.padding = '0'; // Remove padding for better logo fit
+toggleButton.style.backgroundImage = 'url(https://cdn.freebiesupply.com/images/thumbs/2x/taco-bell-logo.png)';
+toggleButton.style.backgroundSize = 'contain'; // Ensure the logo fits within the button
+toggleButton.style.backgroundRepeat = 'no-repeat';
+toggleButton.style.backgroundPosition = 'center';
+toggleButton.style.border = '2px solid #702082';
+toggleButton.style.borderRadius = '50%'; // Optional: Make the button circular
+toggleButton.style.cursor = 'pointer';
+toggleButton.style.backgroundColor = 'white';
+toggleButton.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.2)'; // Add shadow for a floating look
+
+// Toggle the visibility of the button container
+toggleButton.addEventListener('click', () => {
+    if (buttonContainer.style.display === 'none') {
+        buttonContainer.style.display = 'block';
+    } else {
+        buttonContainer.style.display = 'none';
+    }
+});
+
+document.body.appendChild(toggleButton);
+
+// Button 1: Copy KBA#
+function copyKBNumber() {
+    const kbField = document.getElementById('articleNumber');
+    if (kbField) {
+        GM_setClipboard(kbField.value);
+        alert('KB# Copied!');
+    } else {
+        alert('KB# field not found.');
+    }
+}
+
+// Button: Copy KB # & Title
+function copyKBTitle() {
+    const kbField = document.getElementById('articleNumber');
+    const kbTitle = document.getElementById('articleTitleReadonly');
+    const text = `${kbField.value} - ${kbTitle.value}`;
+
+    if (text) {
+        GM_setClipboard(text);
+        alert('KB# Copied!');
+    } else {
+        alert('KB field not found.');
+    }
+}
+
+// Button: Jump to Top
+function jumpToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Smooth scrolling to the top
+    });
+}
+
+// Button: Jump to Bottom
+function jumpToBottom() {
+    window.scrollTo({
+        top: document.body.scrollHeight, // Scroll to the bottom of the page
+        behavior: 'smooth' // Smooth scrolling to the bottom
+    });
+}

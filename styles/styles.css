@@ -10,7 +10,7 @@
   border: 1px solid #ddd; /* Optional border for better visibility */
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  width: 250px; /* Fixed width */
+  width: 150px; /* Fixed width */
   height: auto; /* Height will be dynamic based on the number of buttons */
   transition: height 0.1s ease; /* Smooth transition for height */
   max-height: 100vh;
@@ -43,7 +43,7 @@
   width: 100%; /* Full width of the container */
   margin-bottom: 5px; /* Margin between buttons */
   height: 40px; /* Set a consistent height for all buttons */
-  font-size: 14px;
+  font-size: 12px;
   padding: 10px; /* Padding to make the buttons larger */
 }
 

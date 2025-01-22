@@ -1,0 +1,324 @@
+// ==UserScript==
+// @name         Incident Helper (Eric)
+// @namespace    http://tampermonkey.net/
+// @version      2025-01-18
+// @description  Add styled expandable buttons to ServiceNow pages for quick actions
+// @author       ricc
+// @match        https://yum.service-now.com/incident.do*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
+// @grant        GM_setClipboard
+// ==/UserScript==
+
+// Global variable for alert state
+let alertsEnabled = false; // Default alert state
+
+/**
+ * Helper: Create a button and add it to a container
+ * @param {string} label - The text displayed on the button.
+ * @param {string} color - The background color of the button.
+ * @param {function} clickHandler - The function executed on click.
+ * @returns {HTMLButtonElement} The created button element.
+ */
+function createButton(label, color, clickHandler) {
+    const btn = document.createElement('button');
+    Object.assign(btn.style, {
+        display: 'block',
+        margin: '5px 0',
+        padding: '10px 20px',
+        fontSize: '14px',
+        backgroundColor: color,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        width: '130px',
+        textAlign: 'center'
+    });
+    btn.textContent = label;
+    btn.addEventListener('click', clickHandler);
+    return btn;
+}
+
+/**
+ * Helper: Create an iPhone-style toggle switch
+ * @param {string} labelText - Label displayed next to the toggle.
+ * @param {function} onChange - Callback function when toggle state changes.
+ * @returns {HTMLDivElement} The created toggle switch element.
+ */
+function createToggleSwitch(labelText, onChange) {
+    const wrapper = document.createElement('div');
+    Object.assign(wrapper.style, {
+        display: 'flex',
+        alignItems: 'center',
+        margin: '10px 0'
+    });
+
+    const toggleWrapper = document.createElement('div');
+    Object.assign(toggleWrapper.style, {
+        position: 'relative',
+        width: '50px',
+        height: '25px',
+        borderRadius: '25px',
+        backgroundColor: alertsEnabled ? '#4CAF50' : '#ccc',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s'
+    });
+
+    const toggleKnob = document.createElement('div');
+    Object.assign(toggleKnob.style, {
+        position: 'absolute',
+        top: '2px',
+        left: alertsEnabled ? '26px' : '2px',
+        width: '21px',
+        height: '21px',
+        backgroundColor: '#fff',
+        borderRadius: '50%',
+        transition: 'left 0.3s'
+    });
+
+    toggleWrapper.addEventListener('click', () => {
+        alertsEnabled = !alertsEnabled;
+        toggleWrapper.style.backgroundColor = alertsEnabled ? '#4CAF50' : '#ccc';
+        toggleKnob.style.left = alertsEnabled ? '26px' : '2px';
+        onChange(alertsEnabled);
+    });
+
+    const label = document.createElement('span');
+    Object.assign(label.style, {
+        fontSize: '12px',
+        marginLeft: '10px',
+        color: '#333',
+        lineHeight: '25px'
+    });
+    label.textContent = labelText;
+
+    toggleWrapper.appendChild(toggleKnob);
+    wrapper.appendChild(toggleWrapper);
+    wrapper.appendChild(label);
+
+    return wrapper;
+}
+
+/**
+ * Create and style the button container
+ */
+const buttonContainer = document.createElement('div');
+Object.assign(buttonContainer.style, {
+    position: 'fixed',
+    top: '100px',
+    right: '10px',
+    zIndex: 9999,
+    backgroundColor: '#f5f5f5',
+    padding: '10px',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+});
+
+// Add buttons to the container
+buttonContainer.appendChild(createButton('Copy Store#', '#0078D4', copyStoreNum));
+buttonContainer.appendChild(createButton('Copy Incident#', '#0078D4', copyIncidentDetails));
+buttonContainer.appendChild(createButton('Copy Contact', '#0078D4', copyContact));
+buttonContainer.appendChild(createButton('Teams Post', '#28a745', copyTeamsPost));
+buttonContainer.appendChild(createButton('Code Red', '#FF0000', copyCodeRed));
+buttonContainer.appendChild(createToggleSwitch('Enable Alerts', (enabled) => {
+    alertsEnabled = enabled;
+}));
+
+document.body.appendChild(buttonContainer);
+
+/**
+ * Create and style the toggle button for showing/hiding the button container
+ */
+const toggleButton = document.createElement('button');
+Object.assign(toggleButton.style, {
+    position: 'fixed',
+    top: '70px',
+    right: '10px',
+    zIndex: 9999,
+    width: '50px',
+    height: '50px',
+    padding: '0',
+    backgroundImage: 'url(https://cdn.freebiesupply.com/images/thumbs/2x/taco-bell-logo.png)',
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    border: '2px solid #702082',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    backgroundColor: 'white',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)'
+});
+
+toggleButton.addEventListener('click', () => {
+    buttonContainer.style.display = buttonContainer.style.display === 'none' ? 'block' : 'none';
+});
+document.body.appendChild(toggleButton);
+
+
+
+
+/**
+* Copy Store Number
+* @function copyStoreNum
+* @return   clipboard
+**/
+function copyStoreNum() {
+    const storeField = document.getElementById('incident.u_store_label');
+    if (storeField) {
+        GM_setClipboard(storeField.value);
+        if (alertsEnabled) alert('Store Number Copied!');
+    } else {
+        if (alertsEnabled) alert('Store field not found.');
+    }
+}
+
+/**
+* Copy Incident Number
+* @function copyIncidentDetails
+* @return   clipboard
+**/
+function copyIncidentDetails() {
+    const incidentField = document.getElementById('sys_readonly.incident.number');
+    if (incidentField) {
+        const text = `Incident Number: ${incidentField.value}`;
+        GM_setClipboard(text);
+        if (alertsEnabled) alert('Incident details copied!');
+    } else {
+        if (alertsEnabled) alert('Couldn’t find incident field.');
+    }
+}
+
+
+/**
+* Copy Contact Info
+* @function copyContact
+* @return   clipboard
+**/
+function copyContact() {
+    const storeField = document.getElementById('incident.u_contact_to');
+    if (storeField) {
+        GM_setClipboard(storeField.value);
+        if (alertsEnabled) alert('Contact Copied!');
+    } else {
+        if (alertsEnabled) alert('Contact field not found.');
+    }
+}
+
+/**
+* Create Teams Post
+* @function copyTeamsPost
+* @return   clipboard
+**/
+function copyTeamsPost() {
+    const incidentField = document.getElementById('sys_readonly.incident.number');
+    const callerField = document.getElementById('sys_display.incident.caller_id');
+    const shortDescriptionField = document.getElementById('incident.short_description');
+    const notesField = document.getElementById('activity-stream-work_notes-textarea');
+
+        const text = `@US-TB-IT Restaurant Care
+Store Number: ${callerField ? callerField.value: ''}
+Incident Number: ${incidentField ? incidentField.value : ''}
+Issue: ${shortDescriptionField ? shortDescriptionField.value : ''}
+KB Used:
+
+${notesField.value}`;
+        GM_setClipboard(text);
+    if (alertsEnabled) {
+        alert('Formated text copied for Teams Post!');
+    }
+
+}
+
+/**
+* Create Code Red Post
+* @function copyCodeRed
+* @return   clipboard
+**/
+function copyCodeRed() {
+    const contactNameField = document.getElementById('incident.u_contact_to');
+    const storeNumberField = document.getElementById('incident.u_store_label');
+    const ticketNumberField = document.getElementById('sys_readonly.incident.number');
+    const restaurantStatusField = document.getElementById('incident.u_store_open_closed_status');
+    const crScenarioField = document.getElementById('incident.short_description');
+    const organizationButton = document.getElementById('viewr.incident.u_store');
+    const storePhone = document.getElementById('sys_readonly.incident.u_store.u_phone');
+
+    if (organizationButton) {
+        // Click the button to open the popup
+        organizationButton.click();
+
+        // Poll for the organization field and area coach field
+        const maxAttempts = 20; // Try for up to 2 seconds (20 * 100ms)
+        let attempts = 0;
+
+        const pollForFields = setInterval(() => {
+            const organizationField = document.getElementById('sys_readonly.u_stores.u_legal_entity_name');
+            const areaCoachField = document.getElementById('u_stores.u_frn_area_coach_label');
+            let organizationValue = '';
+            let areaCoachValue = '';
+
+            if (organizationField && areaCoachField) {
+                organizationValue = organizationField.value;
+                areaCoachValue = areaCoachField.value;
+
+                // Compile the text
+                const text = `
+Code Red KB: KB0018072
+
+Code Red Scenarios (Pick applicable and delete the rest. Copy paste applicable scenario into Short Description):
+Network Down - Orders Not Sending to Kitchen
+Network Down - CC Not Processing
+Network Down - All Registers Down
+Electrical - (Insert Reason) Post in Code Red channel but we will no longer be opening a code red for electrical issues unless due to natural disaster.
+SmartHub Unavailable on all TKDS
+Unable to accept digital orders
+DTDMB Down
+----------------------------------------------------------------------------------------------
+# Code Red Template for Reference
+----------------------------------------------------------------------------------------------
+Onsite Contact Name: ${contactNameField ? contactNameField.value : ''}
+Store Number: ${storeNumberField ? storeNumberField.value : ''}
+Ticket Number: ${ticketNumberField ? ticketNumberField.value : ''}
+Restaurant Status: ${restaurantStatusField ? restaurantStatusField.value : ''}
+Is the store able to process credit cards offline (under $35)?
+Is the store able to send orders to the kitchen or to other POS?
+Is there electrical power going to FortiGate router, Network Modem, and Aruba switch?
+On-site staff available?
+1. (VoIP) ${storePhone ? storePhone.value : ''}
+2. (MIC)
+
+Organization: ${organizationValue}
+Area Coach: ${areaCoachValue}
+CR Scenario: ${crScenarioField ? crScenarioField.value : ''}
+Current Status:
+Next Steps:
+3rd Party Ticket #:
+`;
+
+                GM_setClipboard(text);
+
+                // Click the button again to close the popup
+                organizationButton.click();
+
+                // Stop polling
+                clearInterval(pollForFields);
+                if (alertsEnabled) {
+                    alert('Code Red Template copied to clipboard successfully!');
+                }
+            }
+
+            // Stop polling after max attempts
+            if (++attempts >= maxAttempts) {
+                clearInterval(pollForFields);
+                if (alertsEnabled) {
+                    alert('Couldn’t load all fields in time.');
+                }
+            }
+        }, 100); // Poll every 100ms
+    } else {
+        if (alertsEnabled) {
+            alert('Organization button not found!');
+        }
+    }
+}

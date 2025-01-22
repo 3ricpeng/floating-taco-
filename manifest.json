@@ -4,39 +4,40 @@
   "version": "1.0",
   "description": "Runs on ServiceNow pages to add custom functionality.",
   "icons": {
-    "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["scripting"],
+  "permissions": ["scripting", "storage"],
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://yum.service-now.com/incident.do*"],
-      "js": ["incident.js", "buttons.js"],
-      "css": ["styles.css"],
-      "all_frames": true
+      "js": ["scripts/incident.js", "scripts/buttons.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_start"
     },
     {
-      "matches": ["https://yum.service-now.com/kb_view.do*"],
-      "js": ["kb.js", "buttons.js"],
-      "css": ["styles.css"],
-      "all_frames": true
+      "matches": ["https://yum.service-now.com/*kb_view.do*","https://yum.service-now.com/*nav_to.do*" ],
+      "js": ["scripts/kb.js", "scripts/buttons.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_start"
     },
     {
-      "matches": ["https://yum.service-now.com/ui_page.do*"],
-      "js": ["landing.js", "buttons.js"],
-      "css": ["styles.css"],
-      "all_frames": true
+      "matches": ["https://yum.service-now.com/ui_page.do*", "https://yum.service-now.com/nav_to.do*"],
+      "js": ["scripts/landing.js", "scripts/buttons.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_start"
     }
   ],
   "action": {
+    "default_popup": "popup/popup.html",
     "default_icon": {
-      "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_popup": "popup.html",
-    "default_title": "Floating Taco"
+    "default_title": "Floating Taco Control Center"
   },
   "web_accessible_resources": [
     {

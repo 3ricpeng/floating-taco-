@@ -1,0 +1,187 @@
+// ==UserScript==
+// @name         Landing Page Helper
+// @namespace    http://tampermonkey.net/
+// @version      2025-01-18
+// @description  Add styled expandable buttons to ServiceNow pages for quick actions
+// @author       ricc
+// @match        https://yum.service-now.com/ui_page.do*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
+// @grant        GM_setClipboard
+// ==/UserScript==
+
+// Global variable to toggle alerts
+let alertsEnabled = false;
+
+// Helper: Create a button and add it to a container
+function createButton(label, color, clickHandler) {
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.display = 'block';
+    btn.style.margin = '5px 0';
+    btn.style.padding = '10px 20px';
+    btn.style.fontSize = '14px';
+    btn.style.backgroundColor = color;
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '5px';
+    btn.style.cursor = 'pointer';
+    btn.style.width = '130px'; // Set a fixed width for all buttons
+    btn.style.textAlign = 'center'; // Center-align text
+    btn.addEventListener('click', clickHandler);
+    return btn;
+}
+
+// Helper: Create an iPhone-style toggle switch
+function createToggleSwitch(labelText, onChange) {
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.margin = '5px 0';
+
+    // Create the toggle container
+    const toggleWrapper = document.createElement('div');
+    toggleWrapper.style.position = 'relative';
+    toggleWrapper.style.width = '50px';
+    toggleWrapper.style.height = '25px';
+    toggleWrapper.style.borderRadius = '25px';
+    toggleWrapper.style.backgroundColor = alertsEnabled ? '#4CAF50' : '#ccc';
+    toggleWrapper.style.cursor = 'pointer';
+    toggleWrapper.style.transition = 'background-color 0.3s';
+
+    // Create the toggle knob
+    const toggleKnob = document.createElement('div');
+    toggleKnob.style.position = 'absolute';
+    toggleKnob.style.top = '2px';
+    toggleKnob.style.left = alertsEnabled ? '26px' : '2px';
+    toggleKnob.style.width = '21px';
+    toggleKnob.style.height = '21px';
+    toggleKnob.style.backgroundColor = '#fff';
+    toggleKnob.style.borderRadius = '50%';
+    toggleKnob.style.transition = 'left 0.3s';
+
+    // Update the toggle state on click
+    toggleWrapper.addEventListener('click', () => {
+        alertsEnabled = !alertsEnabled;
+        toggleWrapper.style.backgroundColor = alertsEnabled ? '#4CAF50' : '#ccc';
+        toggleKnob.style.left = alertsEnabled ? '26px' : '2px';
+        onChange(alertsEnabled);
+    });
+
+    // Create the label for the toggle
+    const label = document.createElement('span');
+    label.textContent = labelText;
+    label.style.fontSize = '12px'; // Smaller font size for text
+    label.style.marginLeft = '10px';
+    label.style.color = '#333';
+    label.style.lineHeight = '25px'; // Matches the height of the toggle
+
+    // Assemble the toggle
+    toggleWrapper.appendChild(toggleKnob);
+    wrapper.appendChild(toggleWrapper);
+    wrapper.appendChild(label);
+    return wrapper;
+}
+
+// Create a container for the buttons
+const buttonContainer = document.createElement('div');
+buttonContainer.style.position = 'fixed';
+buttonContainer.style.top = '100px';
+buttonContainer.style.right = '10px';
+buttonContainer.style.zIndex = 9999;
+buttonContainer.style.backgroundColor = '#f5f5f5';
+buttonContainer.style.padding = '10px';
+buttonContainer.style.border = '1px solid #ccc';
+buttonContainer.style.borderRadius = '5px';
+buttonContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+buttonContainer.style.display = 'block'; // Initially expanded
+
+// Add buttons to the container
+buttonContainer.appendChild(createButton('Copy Store#', '#0078D4', copyStoreNumber));
+buttonContainer.appendChild(createButton('Copy Address', '#0078D4', copyAddress));
+buttonContainer.appendChild(createToggleSwitch('Toggle Alerts', (enabled) => {
+    console.log(`Alerts are now ${enabled ? 'Enabled' : 'Disabled'}`);
+}));
+
+document.body.appendChild(buttonContainer);
+
+// Create a toggle button to expand/collapse the buttons
+const toggleButton = document.createElement('button');
+toggleButton.style.position = 'fixed';
+toggleButton.style.top = '70px';
+toggleButton.style.right = '10px';
+toggleButton.style.zIndex = 9999;
+toggleButton.style.width = '50px'; // Set width to fit the logo
+toggleButton.style.height = '50px'; // Set height to fit the logo
+toggleButton.style.padding = '0'; // Remove padding for better logo fit
+toggleButton.style.backgroundImage = 'url(https://cdn.freebiesupply.com/images/thumbs/2x/taco-bell-logo.png)';
+toggleButton.style.backgroundSize = 'contain'; // Ensure the logo fits within the button
+toggleButton.style.backgroundRepeat = 'no-repeat';
+toggleButton.style.backgroundPosition = 'center';
+toggleButton.style.border = '2px solid #702082';
+toggleButton.style.borderRadius = '50%'; // Optional: Make the button circular
+toggleButton.style.cursor = 'pointer';
+toggleButton.style.backgroundColor = 'white';
+toggleButton.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.2)'; // Add shadow for a floating look
+
+// Toggle the visibility of the button container
+toggleButton.addEventListener('click', () => {
+    if (buttonContainer.style.display === 'none') {
+        buttonContainer.style.display = 'block';
+    } else {
+        buttonContainer.style.display = 'none';
+    }
+});
+document.body.appendChild(toggleButton);
+
+
+
+// Button 2: Copy Address
+function copyAddress() {
+    // Find the element containing the address
+    const addressField = document.querySelector('td.infoText');
+
+    if (addressField) {
+        // Combine all the text from child divs into a single string
+        const address = Array.from(addressField.querySelectorAll('div'))
+            .map(div => div.textContent.trim())
+            .join(', ');
+
+        // Copy the address to the clipboard
+        GM_setClipboard(address);
+
+        // Alert the copied address
+        if (alertsEnabled) {
+            alert(`Address Copied: ${address}`);
+        }
+    } else {
+        if (alertsEnabled) {
+            alert('Address field not found.');
+        }
+    }
+}
+
+
+//button 1
+// Function to extract the store ID from the img src attribute and copy it to the clipboard
+function copyStoreNumber() {
+    const imgElement = document.querySelector('img[src*="storeid="]');
+    if (imgElement) {
+        const src = imgElement.getAttribute('src');
+        const match = src.match(/storeid=(\d+)/);
+        if (match && match[1]) {
+            const storeId = match[1];
+            GM_setClipboard(storeId);
+            if (alertsEnabled) {
+                alert(`Store# ${storeId} copied to clipboard!`);
+            }
+        } else {
+            if (alertsEnabled) {
+                alert('Store ID not found.');
+            }
+        }
+    } else {
+        if (alertsEnabled) {
+            alert('Store ID not found.');
+        }
+    }
+}
