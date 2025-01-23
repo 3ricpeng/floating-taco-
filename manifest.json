@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Floating Taco",
-  "version": "1.0",
-  "description": "Runs on ServiceNow pages to add custom functionality.",
+  "version": "0.1",
+  "description": "Updates: \n - change teams template to just include @ on first line \n -updated CR notification",
   "icons": {
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
@@ -16,22 +16,24 @@
       "matches": ["https://yum.service-now.com/incident.do*"],
       "js": ["scripts/incident.js", "scripts/buttons.js"],
       "css": ["styles/styles.css"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["https://yum.service-now.com/kb_view.do*","https://yum.service-now.com/nav_to.do*kb_view.do*", "https://yum.service-now.com/*?uri=*kb_view.do*", "https://yum.service-now.com/nav_to.do?uri=*/kb_view.do*"],
-      "js": ["scripts/kb.js", "scripts/buttons.js"],
-      "css": ["styles/styles.css"],
       "run_at": "document_start", 
       "all_frames": true
     },
     {
-      "matches": ["https://yum.service-now.com/ui_page.do*", "https://yum.service-now.com/*nav_to.do*"],
+      "matches": ["https://yum.service-now.com/*b_view.do*" ],
+      "js": ["scripts/kb.js", "scripts/buttons.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["https://yum.service-now.com/ui_page.do*"],
       "js": ["scripts/landing.js", "scripts/buttons.js"],
       "css": ["styles/styles.css"],
-      "run_at": "document_start"
+      "run_at": "document_start", 
+      "all_frames": true    
     }
-  ],
+   ],
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {

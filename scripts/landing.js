@@ -27,6 +27,7 @@
   const landingButtons = [
     { text: "Copy Store#", action: copyStore, id: "copyStore" },
     { text: "Copy Address", action: copyAddress, id: "copyAddress" },
+    { text: "Autofill Template", action: fillNotesWithTemplate(), id: "autofillTemplate"}
   ];
 
   // Button actions
@@ -55,7 +56,7 @@
       alert("Image with Store ID not found.");
     }
   }
-
+  // Button 2: copy Address 
   function copyAddress() {
     // Select the <td> element with the class "infoText"
     const addressField = document.querySelector("td.infoText");
@@ -81,6 +82,24 @@
       alert("Address field not found.");
     }
   }
+
+  // Button 3: Auto Fill Template 
+  function fillNotesWithTemplate() {
+    // Select the textarea
+    const textarea = document.querySelector("#notes");
+    if (textarea) {
+      // Set the value of the textarea
+      textarea.value = "hello";
+
+      // Trigger an 'input' event to simulate user interaction
+      const inputEvent = new Event("input", { bubbles: true });
+      textarea.dispatchEvent(inputEvent);
+    } else {
+      console.error("Textarea with id 'notes' not found.");
+    }
+  }
+
+  
 
   // Initialize buttons after the DOM is ready
   onDomReady(() => {

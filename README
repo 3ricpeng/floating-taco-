@@ -1,0 +1,75 @@
+# Floating Taco Plugin 
+a plugin that works on the following three types of pages on serviceNow 
+
+
+# Features 
+https://yum.service-now.com/incident.do* -> incident.js  
+https://yum.service-now.com/kb_view.do*  -> kb.js  
+https://yum.service-now.com/ui_page.do*  -> landing.js  
+
+https://yum.service-now.com/*nav_to.do*incident.do*
+https://yum.service-now.com/*nav_to.do*kb_view.do*
+https://yum.service-now.com/*nav_to.do*ui_page.do*
+
+# File Structure 
+project-root/
+│
+├── icons/
+│   ├── icon48.png
+│   ├── icon128.png
+│
+├── popup/
+│   ├── popup.html
+│   ├── popup.js
+│
+├── scripts/
+│   ├── buttons.js
+│   ├── incident.js
+│   ├── kb.js
+│   ├── landing.js
+│
+├── styles/
+│   ├── style.css
+│
+├── manifest.json
+
+
+# Installation Steps: 
+1. download the folder and save locally 
+2. go to browser extension page: 
+    - edge://extensions/
+    - chrome://extensions/
+3. enable developer mode 
+4. unpacked plugin -> choose the plugin folder
+5. plugin should auto load on landing page & incident pages (and KB exclusive page WIP) 
+
+
+# Next Step: 
+1. Flush Out CR Template Logic     +++
+2. Add Testing for Chrome & Edge   +++
+3. Rich Text Editor                ++
+4. Make Draggable (local storage)  ++ 
+5. Template Editor                 +  
+6. 
+
+
+# Bugs: 
+1. Empty Loading Page Support      +++ (done)
+2. General KB Page (?)             +++ (done)
+3. Change all "" to ``             +
+4. 
+
+
+TODO: 
+- CR > cannot go to different page > maybe use an alert to note 
+"This is a Corperate Store, Please Copy XXX & XXX"
+"This is Franchise Store, Please Copy Area Coach's Email"
+
+
+
+
+
+CR Template: 
+Area Coach name, phone number and email (See KB0021415): 
+IF CORPORATE, please provide Area Coach, Market Coach, and Region Coach emails:
+ 

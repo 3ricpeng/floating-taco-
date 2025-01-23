@@ -32,7 +32,7 @@
     { text: "Teams Post", action: copyTeamsTemplate, id: "createTemplateTeams" },
     { text: "Teams Post (Rich)", action: copyTeamsTemplateRich, id: "createTemplateTeams" },
     { text: "CR Post", action: copyCRTemplate, id: "createTemplateCR" },
-    { text: "open", action: Testing, id:"Testing"}
+    //{ text: "open", action: Testing, id:"Testing"}
   ];
 
   let alertsEnabled = false;
@@ -192,7 +192,7 @@ function copyTeamsTemplate() {
       "sys_readonly.incident.number"
     );
     const callerField = document.getElementById(
-      "sys_display.incident.caller_id"
+      "incident.u_store_label"
     );
     const shortDescriptionField = document.getElementById(
       "incident.short_description"
@@ -202,7 +202,7 @@ function copyTeamsTemplate() {
     );
 
     // Format the text for Teams post
-    const text = `@US-TB-IT Restaurant Care
+    const text = `@
 Store Number: ${callerField ? callerField.value : ""}
 Incident Number: ${incidentField ? incidentField.value : ""}
 Issue: ${shortDescriptionField ? shortDescriptionField.value : ""}
@@ -228,7 +228,7 @@ ${notesField ? notesField.value : ""}`;
  * */  
 function copyTeamsTemplateRich() {
   const incidentField = document.getElementById("sys_readonly.incident.number");
-  const callerField = document.getElementById("sys_display.incident.caller_id");
+  const callerField = document.getElementById("incident.u_store_label");
   const shortDescriptionField = document.getElementById("incident.short_description");
   const notesField = document.getElementById("activity-stream-work_notes-textarea");
 
@@ -245,7 +245,7 @@ function copyTeamsTemplateRich() {
 
   // Format the rich text (HTML) for Teams
   const htmlText = `
-    <p><strong>@US-TB-IT Restaurant Care</strong></p>
+    <p><strong>@</strong></p>
     <p><strong>Store Number:</strong> ${storeNumber}</p>
     <p><strong>Incident Number:</strong> <a href="${currentUrl}">${incidentNumber}</a></p>
     <p><strong>Issue:</strong> ${shortDescriptionField ? shortDescriptionField.value : ""}</p>
@@ -281,6 +281,11 @@ ${notesText}`;
     });
 }
 
+
+
+  function checkCorp() {
+    return false 
+  }
 /**
  * Creates CR Template
  * */  
