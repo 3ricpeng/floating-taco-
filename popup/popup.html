@@ -4,17 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Floating Taco</title>
-  <link rel="stylesheet" href="popup.css"> <!-- Linked the CSS file -->
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <h1>Floating Taco</h1>
   <p>Welcome to the Floating Taco extension!</p>
-  
-  <!-- First button - Chrome Extensions Link -->
-  <button id="chrome" onclick="openChromeExtensions()">Chrome Extensions</button>
-  
-  <!-- Second button - Edge Extensions Link -->
-  <button id="edge" onclick="openEdgeExtensions()">Edge Extensions</button>
+  <p>
+    This is a Service Desk Plugin that works on the following pages:
+    <ul>
+      <li>Incident Landing Page</li>
+      <li>Incident Page</li>
+      <li>KB Browsing Page</li>
+    </ul>
+    It will copy all the content into your clipboard. Simply paste it somewhere else. 
+    (This is still a work in progress. For questions, reach out to 
+    <a href="mailto:exp6941@yum.com">exp6941@yum.com</a>)
+  </p>
+
+  <!-- Chrome Extensions Link -->
+  <button id="chrome" onclick="openChromeExtensions()">Open Chrome Extensions</button>
+
+  <!-- Edge Extensions Link -->
+  <button id="edge" onclick="openEdgeExtensions()">Open Edge Extensions</button>
 
   <!-- Toggle for enabling alerts -->
   <div class="toggle-container">
