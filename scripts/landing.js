@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  //*****START******************** */
+  // ********************************** <- Start's Here
   console.log("Landing script running at document_start!");
 
   // Early loading functionality
@@ -21,17 +21,13 @@
 
   // Call early loading
   earlyLoad();
-  //*****END******************** */
+  // ********************************** <- End's Here 
 
   // Define buttons specific to the Landing page
   const landingButtons = [
     { text: "Copy Store#", action: copyStore, id: "copyStore" },
     { text: "Copy Address", action: copyAddress, id: "copyAddress" },
-    {
-      text: "Autofill Template",
-      action: fillNotesWithTemplate(),
-      id: "autofillTemplate",
-    },
+    { text: "Autofill Template", action: fillNotesWithTemplate(), id: "autofillTemplate"}
   ];
 
   // Button actions
@@ -60,7 +56,7 @@
       alert("Image with Store ID not found.");
     }
   }
-  // Button 2: copy Address
+  // Button 2: copy Address 
   function copyAddress() {
     // Select the <td> element with the class "infoText"
     const addressField = document.querySelector("td.infoText");
@@ -87,7 +83,7 @@
     }
   }
 
-  // Button 3: Auto Fill Template
+  // Button 3: Auto Fill Template 
   function fillNotesWithTemplate() {
     // Select the textarea
     const textarea = document.querySelector("#notes");
@@ -102,6 +98,8 @@
       console.error("Textarea with id 'notes' not found.");
     }
   }
+
+  
 
   // Initialize buttons after the DOM is ready
   onDomReady(() => {

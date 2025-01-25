@@ -1,9 +1,8 @@
 (function () {
   "use strict";
 
-  /*******EARLY LOAD BEGIN ***************/
-
-  console.log("Incident script running at document_start!");
+  // ********************************** <- Start's Here
+  console.log("Landing script running at document_start!");
 
   // Early loading functionality
   const earlyLoad = () => {
@@ -22,6 +21,7 @@
 
   // Call early loading
   earlyLoad();
+  // ********************************** <- End's Here 
   /*******EARLY LOAD END ***************/
 
   // Define buttons specific to the Incident page

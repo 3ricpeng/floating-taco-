@@ -1,15 +1,53 @@
 
 
-TODO 
+# Introduction of "The Floating Taco Plugin" 
 
 
+# Origin
 
-flush out corp logic: 
+As an L1 Analyst, there are tasks that I find repetitive, that's why I started to investigate in ways to automate the process to improve the L1 work​
 
 
-- TB Of America, Inc. (store 016743)
-- Taco Bell of America, LLC.(TBC01-050010)
-- Taco Bell Corp. (TBC01-050000)
+# Issue
 
-FrnOwnerName
-***TBC Corporate 
+## Overview of L1 Workflow
+
+- Call Start (tools used: ServiceNow Landing Page)
+- General troubleshooting (tools used: Jarvis/SNOW/EloView/Esper/Retool/Putty etc)
+- Info Gathering (tools used: ServiceNow KB Page) 
+- Escalation (tools used: ServiceNow Incident Page / Teams Post)
+- Call Ends (tools used: ServiceNow Incident Page)
+
+
+## Frictions Identify
+- Jumping back and force between different tools to collect information 
+- Small hurdles 
+  
+# Floating Taco Plugin 
+A tool that works on the following thre pages that collects information and automatically copies it into the clipboard to ease the workflow of an L1 analyst: 
+- ServiceNow Langing Page 
+- ServiceNow Incident Page 
+- ServiceNow KB Page
+
+# Problem Solved & Demonstration
+- L1 Analyst can focus on troubleshooting and not back and forth to create teams post 
+- Rich Text editor allows unity on Teams Post 
+- Demo 
+
+
+# Iterations 
+## First Iteration 
+JS code that runs on Tampermonkey plugin with 3 separate scripts for each page 
+
+## Current Iteration ​
+Chromium Plugin that can run on Edge / Chrome​, easy distribution 
+
+
+# Technical Details 
+## Code Structure 
+## Next Steps 
+1. Flush Out CR Template Logic                   +++
+2. Add Testing for Chrome & Edge                 +++
+3. Rich Text API (restructure code)              ++
+4. Make Draggable (requires Chrome storage API)  ++ 
+5. Template Editor                               +  
